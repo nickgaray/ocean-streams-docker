@@ -90,6 +90,7 @@ RUN sed -i 's/security.useSystemPropertiesFile=true/security.useSystemProperties
 RUN \
   mkdir -p ${OSH_HOME} && \
   mkdir -p ${OSH_HOME}/defaultconfig && \
+  mkdir -p ${OSH_HOME}/defaultbundles && \
   mkdir -p ${OSH_HOME}/config && \
   mkdir -p ${OSH_HOME}/data && \
   mkdir -p ${OSH_HOME}/db && \
@@ -123,6 +124,7 @@ RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
+COPY bundles/* ${OSH_HOME}/defaultbundles/
 COPY scripts/launch.sh ${OSH_HOME}
 
 # Set permissions appropriately. All directories are given 770 mode. All files

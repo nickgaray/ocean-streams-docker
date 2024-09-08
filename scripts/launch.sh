@@ -35,14 +35,12 @@ echo "
 ##
 SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
 
-# Make sure all the necessary certificates are trusted by the system.
-"$SCRIPT_DIR/load_trusted_certs.sh"
-
 if [ -z "$OSH_HOME" ]; then
   echo "OSH_HOME environment variable is not set."
   exit 1
 fi
 CONFIG_DIR="$OSH_HOME/config"
+BUNDLES_DIR="$OSH_HOME/bundles"
 
 ##
 ##  Attempt to print out some information about the hostname and IP address of
@@ -73,6 +71,7 @@ set -e
 ##
 
 DEFAULT_CONFIG_DIR="$OSH_HOME/defaultconfig"
+DEFAULT_BUNDLES_DIR="$OSH_HOME/defaultbundles"
 CONFIG_JSON=config.json
 LOGBACK_XML=logback.xml
 
@@ -81,6 +80,13 @@ if [ ! -f "$CONFIG_DIR/$CONFIG_JSON" ]; then
   cp -v "$DEFAULT_CONFIG_DIR/$CONFIG_JSON" "$CONFIG_DIR/$CONFIG_JSON"
 else
   echo "Config file \"$CONFIG_JSON\" already exists. Leaving it alone."
+fi
+
+if [ "$(ls -A $BUNDLES_DIR)" ]; then
+  echo "$BUNDLES_DIR is not empty... continuing"
+else
+  echo "$BUNDLES_DIR is empty.  Creating from default bundles"
+  cp -v "$DEFAULT_BUNDLES_DIR/*" "$BUNDLES_DIR/."
 fi
 
 if [ ! -f "$CONFIG_DIR/$LOGBACK_XML" ]; then
