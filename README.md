@@ -2,7 +2,7 @@
 
 ![](/logo/ocean-streams-docker-nobg.png)
 
-This Docker project will build a deployable image of a core [OpenSensorHub](www.opensensorhub.org) node. The image is
+This Docker project will build a deployable image of a core [OpenSensorHub](http://www.opensensorhub.org) node. The image is
 using the OSGi support built into [version 2.0 of OpenSensorHub](https://github.com/opensensorhub/osh-core/tree/v2).
 OSGi allows for ease of extensibility by managing addons as bundles that can be downloaded and configure while the
 OpenSensorHub node remains running. Additional bundles can be created by using
