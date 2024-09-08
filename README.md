@@ -106,6 +106,8 @@ node configuration paths.
 
 ● **db**: Suggested location to save H2 database files. Can be referenced as "./db" in node configuration.
 
+● **bundles**: # Any additional OSGi Bundles that the user may want to include after install.
+
 The command to execute is:
 
      docker compose -f docker_compose.yml up -d

@@ -39,13 +39,17 @@ RUN apt-get update \
 
 ## Copy source
 # Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
-#ARG REPO_URL
-#ARG BRANCH
-RUN git clone -b v2 --recursive https://github.com/opensensorhub/osh-core .
+## Copy source
+# Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
+ARG REPO_URL
+ARG BRANCH
+RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
 
 # Run builds excluding unit tests followed by a build of osh-core to get the
 RUN chmod +x ./gradlew 
+RUN ./gradlew :osh-core:build -x test
 RUN ./gradlew build -x test
+RUN ./gradlew genOSGiIndex
 
 ## root command(s)
 # RUN <command(s)>
@@ -90,8 +94,6 @@ RUN \
   mkdir -p ${OSH_HOME}/data && \
   mkdir -p ${OSH_HOME}/db && \
   mkdir -p ${OSH_HOME}/lib && \
-  mkdir -p ${OSH_HOME}/userlib && \
-  mkdir -p ${OSH_HOME}/userclasses && \
   mkdir -p ${OSH_HOME}/bundles
 
 # Remove unneeded groups and accounts. OpenSCAP CCE-85987-6.
@@ -115,7 +117,7 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/build/distributions/osh-core-osgi*.zip /tmp/.
+COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
@@ -166,3 +168,7 @@ VOLUME ${OSH_HOME}/data
 # Suggested location to save H2 database files. Can be referenced as "./db" in
 # node configuration.
 VOLUME ${OSH_HOME}/db
+
+# Any additional OSGi Bundles that the user may want to include
+# after install.
+VOLUME ${OSH_HOME}/bundles

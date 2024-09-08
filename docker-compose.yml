@@ -22,3 +22,4 @@ services:
       - ./data:/opt/osh/data
       - ./db:/opt/osh/db
       - ./logs:/opt/osh/.moduledata
+      - ./bundles:/opt/osh/bundles
