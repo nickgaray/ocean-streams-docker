@@ -39,8 +39,6 @@ RUN apt-get update \
 
 ## Copy source
 # Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
-## Copy source
-# Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
 ARG REPO_URL
 ARG BRANCH
 RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
@@ -119,7 +117,9 @@ RUN \
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
 COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
+COPY --from=build_container ./buildDir/build/distributions/osgi-bundles-*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
+RUN unzip /tmp/osgi-bundles-*.zip "*.jar" -d ${OSH_HOME}/defaultbundles
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
