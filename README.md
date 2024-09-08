@@ -1,4 +1,6 @@
-# OpenSensorHub Build and Deployment Docker Template
+# OpenSensorHub Build and Deployment Docker for Ocean Streams Project
+
+![](/logo/ocean-streams-docker-nobg.png)
 
 This Docker template will work with OpenSensorHub projects based on
 [OSH Node Dev Template](https://github.com/opensensorhub/osh-node-dev-template.git)
@@ -13,7 +15,7 @@ to clone, build, and deploy your own nodes in a containerized environment.
 
 ## Cloning this Repository
 
-    git clone https://github.com/nickgaray/osh-docker-template.git
+    git clone https://github.com/nickgaray/ocean-streams-docker.git
 
 ## Building the Project
 
