@@ -83,7 +83,7 @@ else
 fi
 
 if [ "$(ls -A $BUNDLES_DIR)" ]; then
-  echo "$BUNDLES_DIR is not empty... continuing"
+  echo "$BUNDLES_DIR is not empty. Leaving it alone."
 else
   echo "$BUNDLES_DIR is empty.  Creating from default bundles"
   cp -v "$DEFAULT_BUNDLES_DIR/*" "$BUNDLES_DIR/."
