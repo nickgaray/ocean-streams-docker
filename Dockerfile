@@ -45,11 +45,11 @@ ARG REPO_URL
 ARG BRANCH
 RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
 
-# Run builds excluding unit tests followed by a build of osh-core to get the
+# Run builds excluding unit tests followed building a bundles dist to get driver bundles built with node
 RUN chmod +x ./gradlew 
 RUN ./gradlew :osh-core:build -x test
 RUN ./gradlew build -x test
-RUN ./gradlew genOSGiIndex
+RUN ./gradlew bundlesDistZip
 
 ## root command(s)
 # RUN <command(s)>
