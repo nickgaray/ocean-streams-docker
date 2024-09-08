@@ -39,14 +39,13 @@ RUN apt-get update \
 
 ## Copy source
 # Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
-ARG REPO_URL
-ARG BRANCH
-RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
+#ARG REPO_URL
+#ARG BRANCH
+RUN git clone -b v2 --recursive https://github.com/opensensorhub/osh-core .
 
 # Run builds excluding unit tests followed by a build of osh-core to get the
 RUN chmod +x ./gradlew 
 RUN ./gradlew build -x test
-RUN ./gradlew :osh-core:build -x test
 
 ## root command(s)
 # RUN <command(s)>
@@ -87,7 +86,7 @@ RUN sed -i 's/security.useSystemPropertiesFile=true/security.useSystemProperties
 RUN \
   mkdir -p ${OSH_HOME} && \
   mkdir -p ${OSH_HOME}/defaultconfig && \
-#  mkdir -p ${OSH_HOME}/config && \
+  mkdir -p ${OSH_HOME}/config && \
   mkdir -p ${OSH_HOME}/data && \
   mkdir -p ${OSH_HOME}/db && \
   mkdir -p ${OSH_HOME}/lib && \
@@ -116,17 +115,18 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/build/distributions/osh-node*.zip /tmp/.
-RUN unzip /tmp/osh-node-*.zip "*" -d /opt
-RUN mv /opt/osh-node-*/* ${OSH_HOME}
-RUN rmdir /opt/osh-node-*
+COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
+RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
+RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
+RUN rmdir /opt/osh-core-osgi*
+RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
 COPY scripts/launch.sh ${OSH_HOME}
 
 # Override deployment name in config
 ARG DEPLOYMENT_NAME
-RUN sed -i 's/"[Edit config.json \"deploymentName\" field]"/${DEPLOYMENT_NAME}' \
-    /etc/java-17-openjdk/security/java.security
+RUN sed -i 's/"[Edit config.json \"deploymentName\" field]"/${DEPLOYMENT_NAME}/g' \
+    ${OSH_HOME}/config/config.json
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.
