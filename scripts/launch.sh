@@ -75,6 +75,7 @@ DEFAULT_BUNDLES_DIR="$OSH_HOME/defaultbundles"
 CONFIG_JSON=config.json
 LOGBACK_XML=logback.xml
 
+echo ""
 if [ ! -f "$CONFIG_DIR/$CONFIG_JSON" ]; then
   echo "Config file \"$CONFIG_JSON\" does not exist. Creating from default."
   cp -v "$DEFAULT_CONFIG_DIR/$CONFIG_JSON" "$CONFIG_DIR/$CONFIG_JSON"
@@ -82,13 +83,15 @@ else
   echo "Config file \"$CONFIG_JSON\" already exists. Leaving it alone."
 fi
 
+echo ""
 if [ "$(ls -A $BUNDLES_DIR)" ]; then
   echo "$BUNDLES_DIR is not empty. Leaving it alone."
 else
   echo "$BUNDLES_DIR is empty.  Creating from default bundles"
-  cp -v "$DEFAULT_BUNDLES_DIR/*" "$BUNDLES_DIR/."
+  cp -vR "$DEFAULT_BUNDLES_DIR/." "$BUNDLES_DIR"
 fi
 
+echo ""
 if [ ! -f "$CONFIG_DIR/$LOGBACK_XML" ]; then
   echo "Config file \"$LOGBACK_XML\" does not exist. Creating from default."
   cp -v "$DEFAULT_CONFIG_DIR/$LOGBACK_XML" "$CONFIG_DIR/$LOGBACK_XML"
@@ -96,6 +99,7 @@ else
   echo "Config file \"$LOGBACK_XML\" already exists. Leaving it alone."
 fi
 
+echo ""
 # Start the node
 java -Xmx256m \
   -Dlogback.configurationFile=./config/logback.xml \

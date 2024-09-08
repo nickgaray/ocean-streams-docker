@@ -123,8 +123,8 @@ RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
+RUN cp ${OSH_HOME}/bundles/* ${OSH_HOME}/defaultbundles/.
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
-COPY bundles/* ${OSH_HOME}/defaultbundles/
 COPY scripts/launch.sh ${OSH_HOME}
 
 # Set permissions appropriately. All directories are given 770 mode. All files
