@@ -106,14 +106,6 @@ node configuration paths.
 
 ● **db**: Suggested location to save H2 database files. Can be referenced as "./db" in node configuration.
 
-● **userclasses**: Any additional ".class" files that the user may want to include in the classpath after install. These
-will be first in the classpath, before any other libraries included in the image.
-
-● **userlib**: Any additional libraries that the user may want to include in the classpath after install. These will be
-second in the classpath, before other libraries that are included in the image.
-
-● **bundles**: # Any additional OSGi Bundles that the user may want to include after install.
-
 The command to execute is:
 
      docker compose -f docker_compose.yml up -d
@@ -165,16 +157,6 @@ to be updated, if doing this, so that config.json and db are correctly reference
 - **target-dir**: in this example it has been set to data and will contain the config and recorded data
 - **tag**: The tag to assign to the image being built, usually of the form ```repo_url/image:tag``` where
   the ```repo_url/``` may be omitted
-
-If using mounted volumes and the configuration file (config.json) is hosted on the mounted volume, then change the
-launch.[sh | bat] to point to the correct path for the mounted volumes. Similarly, if data is to be stored externally to
-the container, update path to location for database files
-
-     java -Xmx2g -Dlogback.configurationFile=./logback.xml -cp "lib/*" \
-     -Djava.system.class.loader="org.sensorhub.utils.NativeClassLoader" \
-     -Djavax.net.ssl.keyStore="./osh-keystore.p12" -Djavax.net.ssl.keyStorePassword="atakatak" \
-     -Djavax.net.ssl.trustStore="./osh-keystore.p12" -Djavax.net.ssl.trustStorePassword="atakatak" \
-     org.sensorhub.impl.SensorHub ./data/config.json ./data/db
 
 ## Testing Deployment
 

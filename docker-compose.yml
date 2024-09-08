@@ -21,7 +21,4 @@ services:
       - ./config:/opt/osh/config
       - ./data:/opt/osh/data
       - ./db:/opt/osh/db
-      - ./userclasses:/opt/osh/userclasses
-      - ./userlib:/opt/osh/userlib
       - ./logs:/opt/osh/.moduledata
-      - ./bundles:/opt/osh/bundles

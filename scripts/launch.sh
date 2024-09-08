@@ -93,5 +93,5 @@ fi
 # Start the node
 java -Xmx256m \
   -Dlogback.configurationFile=./config/logback.xml \
-	-cp "lib/*:userclasses:userlib/*" \
+	-cp "lib/*" \
   org.sensorhub.impl.osgi.SensorHubOsgi ./config/config.json db

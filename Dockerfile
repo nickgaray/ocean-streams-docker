@@ -115,18 +115,13 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
+COPY --from=build_container ./buildDir/build/distributions/osh-core-osgi*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
 COPY scripts/launch.sh ${OSH_HOME}
-
-# Override deployment name in config
-ARG DEPLOYMENT_NAME
-RUN sed -i 's/"[Edit config.json \"deploymentName\" field]"/${DEPLOYMENT_NAME}/g' \
-    ${OSH_HOME}/defaultconfig/config.json
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.
@@ -171,17 +166,3 @@ VOLUME ${OSH_HOME}/data
 # Suggested location to save H2 database files. Can be referenced as "./db" in
 # node configuration.
 VOLUME ${OSH_HOME}/db
-
-# Any additional ".class" files that the user may want to include in the
-# classpath after install. These will be first in the classpath, before any
-# other libraries included in the image.
-VOLUME ${OSH_HOME}/userclasses
-
-# Any additional libraries that the user may want to include in the classpath
-# after install. These will be second in the classpath, before other libraries
-# that are included in the image.
-VOLUME ${OSH_HOME}/userlib
-
-# Any additional OSGi Bundles that the user may want to include
-# after install.
-VOLUME ${OSH_HOME}/bundles
