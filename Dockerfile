@@ -38,16 +38,12 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 ## Copy source
-# Retrieve the sources from a repo using the REPO_URL and BRANCH passed as a command line argument
-ARG REPO_URL
-ARG BRANCH
-RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
+# Retrieve the sources from a repo
+RUN git clone -b v2 --recursive https://github.com/opensensorhub/osh-core .
 
-# Run builds excluding unit tests followed building a bundles dist to get driver bundles built with node
+# Run builds excluding unit tests
 RUN chmod +x ./gradlew 
-RUN ./gradlew :osh-core:build -x test
 RUN ./gradlew build -x test
-RUN ./gradlew bundlesDistZip
 
 ## root command(s)
 # RUN <command(s)>
@@ -116,10 +112,8 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
-COPY --from=build_container ./buildDir/build/distributions/osgi-bundles-*.zip /tmp/.
+COPY --from=build_container ./buildDir/build/distributions/osh-core-osgi*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
-RUN unzip /tmp/osgi-bundles-*.zip "*.jar" -d ${OSH_HOME}/defaultbundles
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
