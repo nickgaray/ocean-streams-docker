@@ -126,7 +126,7 @@ COPY scripts/launch.sh ${OSH_HOME}
 # Override deployment name in config
 ARG DEPLOYMENT_NAME
 RUN sed -i 's/"[Edit config.json \"deploymentName\" field]"/${DEPLOYMENT_NAME}/g' \
-    ${OSH_HOME}/config/config.json
+    ${OSH_HOME}/defaultconfig/config.json
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.
