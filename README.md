@@ -2,16 +2,13 @@
 
 ![](/logo/ocean-streams-docker-nobg.png)
 
-This Docker template will work with OpenSensorHub projects based on
-[OSH Node Dev Template](https://github.com/opensensorhub/osh-node-dev-template.git)
-for creating OpenSensorHub nodes.
-
-The [OSH Node Dev Template](https://github.com/opensensorhub/osh-node-dev-template.git)
-allows you to write new modules for [OpenSensorHub](www.opensensorhub.org) and build a
-deployable distribution.
-
-This docker template allows you to point to a specific branch and repository URL in order
-to clone, build, and deploy your own nodes in a containerized environment.
+This Docker project will build a deployable image of a core [OpenSensorHub](www.opensensorhub.org) node. The image is
+using the OSGi support built into [version 2.0 of OpenSensorHub](https://github.com/opensensorhub/osh-core/tree/v2).
+OSGi allows for ease of extensibility by managing addons as bundles that can be downloaded and configure while the
+OpenSensorHub node remains running. Additional bundles can be created by using
+the [Ocean Streams](https://github.com/nickgaray/ocean-streams) OpenSensorHub
+project and writing new modules for sensor, processes, and service. See
+the [README.md](https://github.com/nickgaray/ocean-streams/blob/main/README.md) file for instructions on building.
 
 ## Cloning this Repository
 
@@ -22,12 +19,9 @@ to clone, build, and deploy your own nodes in a containerized environment.
 Building is as simple as running the following command replacing the placeholders in ```[]```
 with appropriate values. See the placeholders description below the build command template.
 
-    docker build -t [tag] . -f dockerfile --build-arg BRANCH=[branch] --build-arg REPO_URL=[url]
+    docker build -t [tag] . -f Dockerfile
 
 - **tag**: The tag to assign to the image being built
-- **branch**: The branch to check out
-- **url**: The URL of the repository to an OpenSensorHub project based
-  on [OSH Node Dev Template](https://github.com/opensensorhub/osh-node-dev-template.git)
 
 ## Understanding Docker Commands
 
