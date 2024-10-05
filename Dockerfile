@@ -119,7 +119,7 @@ RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 RUN cp ${OSH_HOME}/bundles/* ${OSH_HOME}/defaultbundles/.
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
-COPY scripts/launch.sh ${OSH_HOME}
+COPY scripts/launch.sh scripts/load_trusted_certs.sh ${OSH_HOME}
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.

@@ -2,17 +2,60 @@
 
 ![](/logo/ocean-streams-docker-nobg.png)
 
-This Docker project will build a deployable image of a core [OpenSensorHub](http://www.opensensorhub.org) node. The image is
-using the OSGi support built into [version 2.0 of OpenSensorHub](https://github.com/opensensorhub/osh-core/tree/v2).
-OSGi allows for ease of extensibility by managing addons as bundles that can be downloaded and configure while the
-OpenSensorHub node remains running. Additional bundles can be created by using
-the [Ocean Streams](https://github.com/nickgaray/ocean-streams) OpenSensorHub
-project and writing new modules for sensor, processes, and service. See
+This Docker project will build a deployable image of a core [OpenSensorHub](http://www.opensensorhub.org) node. The
+image is using the OSGi support built
+into [version 2.0 of OpenSensorHub](https://github.com/opensensorhub/osh-core/tree/v2). OSGi allows for ease of
+extensibility by managing addons as bundles that can be downloaded and configure while the OpenSensorHub node remains
+running. Additional bundles can be created by using the [Ocean Streams](https://github.com/nickgaray/ocean-streams)
+OpenSensorHub project and writing new
+modules for sensor, processes, and service. See
 the [README.md](https://github.com/nickgaray/ocean-streams/blob/main/README.md) file for instructions on building.
+
+This project also includes, via a docker.io, an [Apache](https://httpd.apache.org/download.cgi) file server as a
+location to host any additional OSGi bundles not packaged by default.
+See [configuring the bundles repo](#configuring-the-bundles-repo) section
+of [Executing via Docker Compose](#executing-via-docker-compose)
 
 ## Cloning this Repository
 
     git clone https://github.com/nickgaray/ocean-streams-docker.git
+
+## Setting Up Default Configuration
+
+This project contains a default ```config.json``` file that is used by OpenSensorHub to maintain the configuration
+parameters of the various modules (driver, processes, services) managed by OSH. Either prior to building or executing
+the image there are two optional properties that are recommended to be changed:
+
+1. **bundleRepoUrls** - an array of URLs identifying file servers from which new OSGi bundles may be downloaded for use
+   in
+   OpenSensorHub. The locations are of the form ```["URL | ADDRESS:PORT/index.xml"]```. If you are either not setting up
+   a bundle repository or do now currently know where one exists to be pointed to, then leave the field unmodified.
+2. **deploymentName** - This helps identify an OSH Node and by default contains "Ocean Streams"
+
+The properties can be found by editing the ```config/config.json``` file and navigating to the config block for the
+object class ```org.sensorhub.ui.AdminUIConfig``` as seen below.
+
+```
+{
+  "objClass": "org.sensorhub.ui.AdminUIConfig",
+  "widgetSet": "org.sensorhub.ui.SensorHubWidgetSet",
+  "bundleRepoUrls": ["192.168.1.81:9090/index.xml"],
+  "customPanels": [],
+  "customForms": [],
+  "id": "5cb05c9c-9123-4fa1-8731-ffaa51489678",
+  "moduleClass": "org.sensorhub.ui.AdminUIModule",
+  "name": "Admin UI",
+  "deploymentName": "Ocean Streams",
+  "autoStart": true
+},
+```
+
+If your mounted volumes are not located where this project is cloned, on first time running, the image will copy
+the default ```config/config.json``` into the directory for the corresponding __config
+__ [mounted volume](#declare-volume(s)-for-mount-point-directories). You can edit the config, relaunch the image, and
+the changes will be seen by OpenSensorHUb.
+Optionally, you may want to copy and modify the provided ```config.json``` prior to starting the image for
+OpenSensorHub.
 
 ## Building the Project
 
@@ -91,14 +134,13 @@ the **-p** command line switch discussed in the previous section.
 - **TAG**:
   The tag of the image to pull, such as a version identifier
 
-## Declare volume(s) for mount point directories
+### Declare volume(s) for mount point directories
 
 ● **config**: Location of config.json and logback.xml.
 
-● **data**: Suggested location of any data, such as video files, or other sensor data. Can be referenced as "./data" in
-node configuration paths.
+● **data**: Suggested location to save H2 database files. Can be referenced as "./data" in node configuration.
 
-● **db**: Suggested location to save H2 database files. Can be referenced as "./db" in node configuration.
+● **db**: Used by OpenSensorHub to manage node specific data. Can be referenced as "./db" in node configuration.
 
 ● **bundles**: Any additional OSGi Bundles that the user may want to include after install.
 
@@ -109,9 +151,35 @@ The command to execute is:
 - **-d**
   Executes the image in detached mode, so it is safe to close the terminal window
 
-### Shutting Down via Docker Compose
+### Configuring the Bundles Repo
 
-     docker compose down
+The ```docker_compose.yml``` file contains an entry for the Apache file server under the __services__ block. This file
+server provides the ability to host additional OSGi bundles and is preconfigured to download the latest image of
+the Apache file server image. This server is reachable by clients via port 9090, but you can change this value but be
+sure to not change the internal port or to set the external port to a port already configured for another application or
+service. See the [Ocean Streams](https://github.com/nickgaray/ocean-streams) OpenSensorHub project for optional or
+additional bundle creation and the generation of the bundles ```index.xml``` document.
+
+The file server service also requires the specification of the mounted volume to use as the location from which the
+available bundles should be retrieved.
+
+    apache:
+      image: docker.io/library/httpd:latest
+      container_name: osgi-bundles-server
+      ports:
+        - 9090:80/tcp
+      volumes:
+        - [BUNDLES REPO LOCATION]:/usr/local/apache2/htdocs
+
+- **BUNDLES REPO LOCATION**:
+  The location in the file system where the bundle jar files and the index.xml document are hosted enabling additional
+  bundles to be downloaded and installed onto an existing OSH node.  **DO NOT MAP THIS TO THE SAME PATH AS THE
+  NODE'S ```bundles```** directory. That path is reserved for default bundles and bundles installed on the node to which
+  they are mapped via the ```docker_compose.yml``` file.
+
+If not deploying with a bundle repo do not uncomment the block from the ```docker_compose.yml``` file. Otherwise, make
+sure to set your  [config](#setting-up-default-configuration) ```bundleRepoUrls``` in the ```config/config.json``` to
+point to the address of this bundle repository.
 
 ### Shutting Down via Docker Compose
 
