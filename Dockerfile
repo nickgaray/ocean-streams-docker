@@ -43,11 +43,9 @@ ARG REPO_URL
 ARG BRANCH
 RUN git clone -b ${BRANCH} --recursive ${REPO_URL} .
 
-# Run builds excluding unit tests followed building a bundles dist to get driver bundles built with node
-RUN chmod +x ./gradlew 
-RUN ./gradlew :osh-core:build -x test
+# Run builds excluding unit tests
+RUN chmod +x ./gradlew
 RUN ./gradlew build -x test
-RUN ./gradlew bundlesDistZip
 
 ## root command(s)
 # RUN <command(s)>
@@ -116,16 +114,14 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
-COPY --from=build_container ./buildDir/build/distributions/osgi-bundles-*.zip /tmp/.
+COPY --from=build_container ./buildDir/build/distributions/osh-core-osgi*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
-RUN unzip /tmp/osgi-bundles-*.zip "*.jar" -d ${OSH_HOME}/defaultbundles
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 RUN cp ${OSH_HOME}/bundles/* ${OSH_HOME}/defaultbundles/.
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
-COPY scripts/launch.sh ${OSH_HOME}
+COPY scripts/launch.sh scripts/load_trusted_certs.sh ${OSH_HOME}
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.

@@ -1,0 +1,1 @@
+Suggested location to save H2 database files. Can be referenced as "./data" in node configuration.

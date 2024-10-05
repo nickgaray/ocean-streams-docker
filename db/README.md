@@ -1,0 +1,1 @@
+Used by OpenSensorHub to manage node specific data. Can be referenced as "./db" in node configuration.

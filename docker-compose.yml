@@ -23,3 +23,10 @@ services:
       - ./db:/opt/osh/db
       - ./logs:/opt/osh/.moduledata
       - ./bundles:/opt/osh/bundles
+#  apache:
+#    image: docker.io/library/httpd:latest
+#    container_name: osgi-bundles-server
+#    ports:
+#      - 9090:80/tcp
+#    volumes:
+#      - [BUNDLES REPO LOCATION]:/usr/local/apache2/htdocs
