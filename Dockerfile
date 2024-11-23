@@ -39,7 +39,7 @@ RUN apt-get update \
 
 ## Copy source
 # Retrieve the sources from a repo
-RUN git clone -b v2 --recursive https://github.com/opensensorhub/osh-core .
+RUN git clone -b master --recursive https://github.com/opensensorhub/osh-core .
 
 # Run builds excluding unit tests
 RUN chmod +x ./gradlew 
