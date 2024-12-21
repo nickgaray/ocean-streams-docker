@@ -108,8 +108,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 java -Xmx256m \
   -Dlogback.configurationFile=./config/logback.xml \
 	-cp "lib/*" \
-	-Djavax.net.ssl.keyStore="./config/osh-keystore.p12" \
-  -Djavax.net.ssl.keyStorePassword="osh-keystore" \
-  -Djavax.net.ssl.trustStore="$SCRIPT_DIR/trustStore.jks" \
+	-Djavax.net.ssl.keyStore="$CONFIG_DIR/keystore.p12" \
+  -Djavax.net.ssl.keyStorePassword="keystore" \
+  -Djavax.net.ssl.trustStore="$CONFIG_DIR/trustStore.jks" \
   -Djavax.net.ssl.trustStorePassword="changeit" \
   org.sensorhub.impl.osgi.SensorHubOsgi ./config/config.json db
