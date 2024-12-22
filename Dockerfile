@@ -44,8 +44,7 @@ RUN git clone -b main --recursive https://github.com/nickgaray/ocean-streams .
 # Run builds excluding unit tests
 RUN chmod +x ./gradlew 
 RUN ./gradlew :osh-core:build -x test
-RUN ./gradlew container-security-utils:build -x test
-RUN ./gradlew harvestBundles
+RUN ./gradlew harvestBundles -Dorg.gradle.jvmargs=-Xmx8192m
 
 ## root command(s)
 # RUN <command(s)>
@@ -115,7 +114,7 @@ RUN \
 # COPY ./<source file or directory requiring root ownership> <container destination>
 # COPY --chown=<default user>:0 ./<source file or directory requiring default user ownership> <container destination>
 # COPY --chown=<default user>:0 --from=build_container ./<source file or directory from build_container requiring default user ownership> <container destination>
-COPY --from=build_container ./buildDir/build/distributions/osh-core-osgi*.zip /tmp/.
+COPY --from=build_container ./buildDir/osh-core/build/distributions/osh-core-osgi*.zip /tmp/.
 RUN unzip /tmp/osh-core-osgi*.zip "*" -d /opt
 RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
