@@ -39,11 +39,13 @@ RUN apt-get update \
 
 ## Copy source
 # Retrieve the sources from a repo
-RUN git clone -b master --recursive https://github.com/opensensorhub/osh-core .
+RUN git clone -b main --recursive https://github.com/nickgaray/ocean-streams .
 
 # Run builds excluding unit tests
 RUN chmod +x ./gradlew 
-RUN ./gradlew build -x test
+RUN ./gradlew :osh-core:build -x test
+RUN ./gradlew container-security-utils:build -x test
+RUN ./gradlew harvestBundles
 
 ## root command(s)
 # RUN <command(s)>
@@ -119,6 +121,7 @@ RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 RUN cp ${OSH_HOME}/bundles/* ${OSH_HOME}/defaultbundles/.
+COPY --from=build_container ./buildDir/build/bundles/*bundle.jar ${OSH_HOME}/defaultbundles/
 COPY scripts/* ${OSH_HOME}
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
 COPY config/trusted-certs/* ${OSH_HOME}/config/trusted-certs/
