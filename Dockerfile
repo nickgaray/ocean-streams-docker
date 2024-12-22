@@ -86,6 +86,7 @@ RUN \
   mkdir -p ${OSH_HOME}/defaultconfig && \
   mkdir -p ${OSH_HOME}/defaultbundles && \
   mkdir -p ${OSH_HOME}/config && \
+  mkdir -p ${OSH_HOME}/config/trusted-certs && \
   mkdir -p ${OSH_HOME}/data && \
   mkdir -p ${OSH_HOME}/db && \
   mkdir -p ${OSH_HOME}/lib && \
@@ -118,8 +119,9 @@ RUN mv /opt/osh-core-osgi*/* ${OSH_HOME}
 RUN rmdir /opt/osh-core-osgi*
 RUN rm ${OSH_HOME}/config.json ${OSH_HOME}/logback.xml ${OSH_HOME}/launch.bat
 RUN cp ${OSH_HOME}/bundles/* ${OSH_HOME}/defaultbundles/.
+COPY scripts/* ${OSH_HOME}
 COPY config/config.json config/logback.xml ${OSH_HOME}/defaultconfig/
-COPY scripts/launch.sh scripts/load_trusted_certs.sh ${OSH_HOME}
+COPY config/trusted-certs/* ${OSH_HOME}/config/trusted-certs/
 
 # Set permissions appropriately. All directories are given 770 mode. All files
 # are given 660. And "*.sh" in the OSH_HOME dir are given 770.
